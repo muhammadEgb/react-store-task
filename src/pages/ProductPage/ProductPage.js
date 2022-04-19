@@ -41,7 +41,7 @@ function ProductPage() {
           <h3>Description: {product && product.description}</h3>
         </Grid>
         <Grid item xs={6}>
-          <img src={product && product.image} width="500px" />
+          <img src={product && product.image} width="500px" alt={product && product.title} />
         </Grid>
       </Grid>
     </div>
