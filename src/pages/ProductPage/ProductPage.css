@@ -1,0 +1,6 @@
+.ProductPage {
+    text-align: left;
+}
+.ProductPage > .details {
+    margin: 5px;
+}
