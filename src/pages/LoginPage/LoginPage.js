@@ -5,10 +5,18 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import { isAuth } from '../../utils/auth';
+import Alert from '@mui/material/Alert';
+
+const LOGIN_STATUS = {
+  UNSET: 'unset',
+  SUCCESS: 'success',
+  FAILURE: 'failure',
+};
 
 function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loginStatus, setLoginStatus] = useState(LOGIN_STATUS.UNSET);
 
   // --- CORS --- //
   const headers = new Headers();
@@ -23,6 +31,7 @@ function LoginPage() {
   }, []);
 
   const login = () => {
+    setLoginStatus(LOGIN_STATUS.UNSET);
     fetch('https://fakestoreapi.com/auth/login', {
       method: 'POST',
       headers: headers,
@@ -34,9 +43,14 @@ function LoginPage() {
       .then(res => res.json())
       .then(json => {
         localStorage.setItem('token', json.token);
-        navigate('/products');
+        setLoginStatus(LOGIN_STATUS.SUCCESS);
+        setTimeout(() => {
+          navigate('/products');
+        }, 2000);
       })
-      .catch(error => console.error(error));
+      .catch(error => {
+        setLoginStatus(LOGIN_STATUS.FAILURE);
+      });
   };
 
   return (
@@ -47,6 +61,7 @@ function LoginPage() {
           sx={{ p: 5, display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 10 }}
         >
           <h1>Login Page</h1>
+
           <TextField
             id="username"
             label="Username"
@@ -72,6 +87,18 @@ function LoginPage() {
               setPassword(event.target.value);
             }}
           />
+
+          {loginStatus === LOGIN_STATUS.SUCCESS && (
+            <Alert hidden={true} id="lofin-success" severity="success">
+              Success!
+            </Alert>
+          )}
+          {loginStatus === LOGIN_STATUS.FAILURE && (
+            <Alert hidden={true} id="login-fail" severity="error">
+              Failure!
+            </Alert>
+          )}
+
           <Button type="submit" variant="contained" fullWidth sx={{ marginY: 5 }} onClick={login}>
             Login
           </Button>

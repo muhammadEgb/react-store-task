@@ -70,7 +70,9 @@ function ProductsPage() {
             justifyContent="center"
           >
             {categories.map(item => (
-              <Button onClick={() => setSelectedCategory(item)}>{item}</Button>
+              <Button key={item} onClick={() => setSelectedCategory(item)}>
+                {item}
+              </Button>
             ))}
           </Stack>
         </div>
