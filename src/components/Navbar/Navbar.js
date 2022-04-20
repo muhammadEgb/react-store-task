@@ -5,8 +5,8 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
 import { useNavigate } from 'react-router-dom';
+import Menu from '@mui/material/Menu';
 
 export default function MenuAppBar() {
   const [auth, setAuth] = React.useState(true);

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Container } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
@@ -8,16 +7,30 @@ import Stack from '@mui/material/Stack';
 import ProductsList from '../../components/ProductsList/ProductsList';
 import Navbar from '../../components/Navbar/Navbar';
 import Button from '@mui/material/Button';
-import { useNavigate } from 'react-router-dom';
+import { Container } from '@mui/material';
+import { useNavigate, useParams } from 'react-router-dom';
 import { isAuth } from '../../utils/auth';
 
 import './ProductsPage.css';
 
+const dummyData = [
+  { title: '', loading: true },
+  { title: '', loading: true },
+  { title: '', loading: true },
+  { title: '', loading: true },
+  { title: '', loading: true },
+  { title: '', loading: true },
+  { title: '', loading: true },
+  { title: '', loading: true },
+  { title: '', loading: true },
+];
+
 function ProductsPage() {
+  const params = useParams();
   const [categories, setCategories] = useState([]);
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState(dummyData);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(undefined);
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,25 +38,25 @@ function ProductsPage() {
       navigate('/');
       return;
     }
-
+    const productsUrl = params.category
+      ? `https://fakestoreapi.com/products/category/${params.category}`
+      : 'https://fakestoreapi.com/products';
+    params.category && setSelectedCategory(params.category.toLowerCase());
     fetch('https://fakestoreapi.com/products/categories')
       .then(res => res.json())
-      .then(json => setCategories(['All', ...json]));
-    fetch('https://fakestoreapi.com/products')
-      .then(res => res.json())
-      .then(json => setProducts(json));
+      .then(json => setCategories(['all', ...json]));
+
+    loadProducts(productsUrl);
   }, []);
 
   useEffect(() => {
     if (selectedCategory !== undefined) {
-      setProducts([]);
+      setProducts(dummyData);
       const url =
-        selectedCategory === 'All'
+        selectedCategory === 'all'
           ? 'https://fakestoreapi.com/products'
           : `https://fakestoreapi.com/products/category/${selectedCategory}`;
-      fetch(url)
-        .then(res => res.json())
-        .then(json => setProducts(json));
+      loadProducts(url);
     }
   }, [selectedCategory]);
 
@@ -51,10 +64,23 @@ function ProductsPage() {
     filterProducts('');
   }, [products]);
 
+  const loadProducts = url => {
+    setTimeout(() => {
+      fetch(url)
+        .then(res => res.json())
+        .then(json => setProducts(json));
+    }, 1500);
+  };
+
   const filterProducts = name => {
     const _name = name.toLowerCase();
     const list = products.filter(item => item.title.toLowerCase().includes(_name));
     setFilteredProducts(list);
+  };
+
+  const handleCategorySelection = category => {
+    setSelectedCategory(category);
+    navigate(`/products/${category}`);
   };
 
   return (
@@ -70,7 +96,11 @@ function ProductsPage() {
             justifyContent="center"
           >
             {categories.map(item => (
-              <Button key={item} onClick={() => setSelectedCategory(item)}>
+              <Button
+                key={item}
+                onClick={() => handleCategorySelection(item)}
+                variant={selectedCategory === item ? 'contained' : 'text'}
+              >
                 {item}
               </Button>
             ))}

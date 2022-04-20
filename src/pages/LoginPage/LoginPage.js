@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import { isAuth } from '../../utils/auth';
 import Alert from '@mui/material/Alert';
+import { isAuth } from '../../utils/auth';
 
 const LOGIN_STATUS = {
   UNSET: 'unset',
@@ -22,8 +22,8 @@ function LoginPage() {
   const headers = new Headers();
   headers.append('Access-Control-Allow-Origin', '*');
   headers.append('Content-Type', 'application/json');
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   useEffect(() => {
     if (isAuth()) {
       navigate('/products');
@@ -46,7 +46,7 @@ function LoginPage() {
         setLoginStatus(LOGIN_STATUS.SUCCESS);
         setTimeout(() => {
           navigate('/products');
-        }, 2000);
+        }, 1500);
       })
       .catch(error => {
         setLoginStatus(LOGIN_STATUS.FAILURE);
@@ -88,6 +88,10 @@ function LoginPage() {
             }}
           />
 
+          <Button type="submit" variant="contained" fullWidth sx={{ marginY: 5 }} onClick={login}>
+            Login
+          </Button>
+
           {loginStatus === LOGIN_STATUS.SUCCESS && (
             <Alert hidden={true} id="lofin-success" severity="success">
               Success!
@@ -98,10 +102,6 @@ function LoginPage() {
               Failure!
             </Alert>
           )}
-
-          <Button type="submit" variant="contained" fullWidth sx={{ marginY: 5 }} onClick={login}>
-            Login
-          </Button>
         </Paper>
       </Container>
     </div>
